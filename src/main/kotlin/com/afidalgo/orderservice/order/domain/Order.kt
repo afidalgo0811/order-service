@@ -11,8 +11,8 @@ import org.springframework.data.relational.core.mapping.Table
 data class Order(
     @Id val id: Long?,
     val bookIsbn: String,
-    val bookName: String,
-    val bookPrice: String,
+    val bookName: String?,
+    val bookPrice: Double?,
     val quantity: Int,
     val status: OrderStatus,
     @CreatedDate val createdDate: Instant?,
@@ -20,12 +20,12 @@ data class Order(
     @Version val version: Int,
 ) {
   companion object {
-    fun create(
+    fun of(
         bookIsbn: String,
-        bookName: String,
-        bookPrice: String,
+        bookName: String?,
+        bookPrice: Double?,
         quantity: Int,
-        status: OrderStatus
+        status: OrderStatus,
     ): Order {
       return Order(null, bookIsbn, bookName, bookPrice, quantity, status, null, null, 0)
     }

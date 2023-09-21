@@ -7,11 +7,16 @@ plugins {
   kotlin("jvm") version "1.8.22"
   kotlin("plugin.spring") version "1.8.22"
   id("com.diffplug.spotless") version "6.19.0"
+  kotlin("kapt") version "1.8.0"
 }
 
 group = "com.afidalgo"
 
 version = "0.0.1-SNAPSHOT"
+
+extra["springCloudVersion"] = "2022.0.3"
+
+extra["testcontainersVersion"] = "1.18.0"
 
 java { sourceCompatibility = JavaVersion.VERSION_17 }
 
@@ -35,6 +40,9 @@ dependencies {
   testImplementation("org.testcontainers:junit-jupiter")
   testImplementation("org.testcontainers:postgresql")
   testImplementation("org.testcontainers:r2dbc")
+  kapt("org.springframework.boot:spring-boot-configuration-processor")
+  implementation("org.springframework.cloud:spring-cloud-starter-config")
+  implementation("org.springframework.retry:spring-retry")
 }
 
 tasks.withType<KotlinCompile> {
@@ -56,3 +64,11 @@ configure<SpotlessExtension> {
 }
 
 tasks.withType<Test> { useJUnitPlatform() }
+
+dependencyManagement {
+  imports {
+    mavenBom(
+        "org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    mavenBom("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
+  }
+}
