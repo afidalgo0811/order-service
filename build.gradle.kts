@@ -20,7 +20,27 @@ extra["testcontainersVersion"] = "1.18.0"
 
 java { sourceCompatibility = JavaVersion.VERSION_17 }
 
-repositories { mavenCentral() }
+java { targetCompatibility = JavaVersion.VERSION_17 }
+
+val spaceUsername: String? by project
+val spacePassword: String? by project
+val userName: String? = System.getenv("SPACE_USERNAME")
+val passWord: String? = System.getenv("SPACE_PASSWORD")
+val usr = userName ?: spaceUsername // checks env first
+val psw = passWord ?: spacePassword // checks env first
+val urlArtifactRepository = ext["jetbrains.url"].toString()
+val sharedLibraryVersion = ext["shared.library.version"].toString()
+
+repositories {
+  mavenCentral()
+  maven {
+    url = uri(urlArtifactRepository)
+    credentials {
+      username = usr
+      password = psw
+    }
+  }
+}
 
 dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
@@ -43,6 +63,7 @@ dependencies {
   kapt("org.springframework.boot:spring-boot-configuration-processor")
   implementation("org.springframework.cloud:spring-cloud-starter-config")
   implementation("org.springframework.retry:spring-retry")
+  implementation("com.afidalgo:shared-library:$sharedLibraryVersion")
 }
 
 tasks.withType<KotlinCompile> {

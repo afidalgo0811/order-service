@@ -14,7 +14,6 @@ import reactor.core.publisher.Mono
 @RestController
 @RequestMapping("orders")
 class OrderController(val orderService: OrderService) {
-
   @GetMapping
   fun getAllOrders(): Flux<Order> {
     return orderService.getAllOrders()
