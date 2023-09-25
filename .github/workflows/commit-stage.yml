@@ -4,6 +4,9 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: afidalgo0811/order-service
   VERSION: latest
+  JAVA_VERSION: '17'
+  SPACE_USERNAME: ${{ secrets.SPACE_USERNAME }}
+  SPACE_PASS: ${{ secrets.SPACE_PASSWORD }}
 jobs:
   build:
     name: Build
@@ -15,9 +18,12 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
           cache: gradle
       - name: Build with gradle
+        env: # Or as an environment variable
+          SPACE_USERNAME: ${{ secrets.SPACE_USERNAME }}
+          SPACE_PASSWORD: ${{ secrets.SPACE_PASSWORD }}
         run: |
           chmod +x gradlew
           ./gradlew build -x test
@@ -36,7 +42,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
           cache: gradle
       - name: Code vulnerability scanning
         uses: anchore/scan-action@v3
@@ -52,6 +58,9 @@ jobs:
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
       - name: Build, Unit test and Integration test
+        env: # Or as an environment variable
+          SPACE_USERNAME: ${{ secrets.SPACE_USERNAME }}
+          SPACE_PASSWORD: ${{ secrets.SPACE_PASSWORD }}
         run: |
           chmod +x gradlew
           ./gradlew build
@@ -85,9 +94,12 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: temurin
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
           cache: gradle
       - name: Build container image
+        env: # Or as an environment variable
+          SPACE_USERNAME: ${{ secrets.SPACE_USERNAME }}
+          SPACE_PASSWORD: ${{ secrets.SPACE_PASSWORD }}
         run: |
           chmod +x gradlew
           ./gradlew bootBuildImage \
