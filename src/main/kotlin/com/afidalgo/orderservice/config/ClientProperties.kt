@@ -6,7 +6,8 @@ import java.net.URI
 import org.springframework.boot.context.properties.ConfigurationProperties
 
 @ConfigurationProperties(prefix = "polar")
-data class ClientProperties(
-    @field:NotNull val catalogServiceUri: URI,
-    @field:NotNull @field:Positive val timeoutValue: Int,
-)
+class ClientProperties {
+  @field:NotNull lateinit var catalogServiceUri: URI
+
+  @field:NotNull @field:Positive var timeoutValue: Int = 1
+}

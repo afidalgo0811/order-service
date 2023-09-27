@@ -63,6 +63,7 @@ dependencies {
   kapt("org.springframework.boot:spring-boot-configuration-processor")
   implementation("org.springframework.cloud:spring-cloud-starter-config")
   implementation("org.springframework.retry:spring-retry")
+  testImplementation("com.squareup.okhttp3:mockwebserver")
   implementation("com.afidalgo:shared-library:$sharedLibraryVersion")
 }
 
