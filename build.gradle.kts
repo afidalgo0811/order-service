@@ -1,5 +1,6 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
   id("org.springframework.boot") version "3.1.3"
@@ -63,6 +64,7 @@ dependencies {
   kapt("org.springframework.boot:spring-boot-configuration-processor")
   implementation("org.springframework.cloud:spring-cloud-starter-config")
   implementation("org.springframework.retry:spring-retry")
+  testImplementation("com.squareup.okhttp3:mockwebserver")
   implementation("com.afidalgo:shared-library:$sharedLibraryVersion")
 }
 
@@ -91,5 +93,17 @@ dependencyManagement {
     mavenBom(
         "org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
     mavenBom("org.testcontainers:testcontainers-bom:${property("testcontainersVersion")}")
+  }
+}
+
+tasks.named<BootBuildImage>("bootBuildImage") {
+  imageName.set(project.name)
+  environment.set(environment.get() + mapOf("BP_JVM_VERSION" to "17"))
+  docker {
+    publishRegistry {
+      username.set(project.findProperty("registryUsername").toString())
+      password.set(project.findProperty("registryToken").toString())
+      url.set(project.findProperty("registryUrl").toString())
+    }
   }
 }
