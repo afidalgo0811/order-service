@@ -3,7 +3,6 @@ package com.afidalgo.orderservice
 import com.afidalgo.orderservice.config.DataConfig
 import com.afidalgo.orderservice.order.domain.OrderRepository
 import com.afidalgo.orderservice.order.domain.OrderService
-import com.afidalgo.orderservice.order.domain.OrderStatus
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest
@@ -16,6 +15,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
 import reactor.test.StepVerifier
 import shared.library.order.Book
+import shared.library.order.OrderStatus
 
 @DataR2dbcTest
 @Import(DataConfig::class)
