@@ -66,6 +66,8 @@ dependencies {
   implementation("org.springframework.retry:spring-retry")
   testImplementation("com.squareup.okhttp3:mockwebserver")
   implementation("com.afidalgo:shared-library:$sharedLibraryVersion")
+  testImplementation("org.springframework.cloud:spring-cloud-stream-test-binder")
+  implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
 }
 
 tasks.withType<KotlinCompile> {

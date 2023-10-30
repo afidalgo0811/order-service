@@ -1,15 +1,17 @@
 package com.afidalgo.orderservice
 
 import com.afidalgo.orderservice.book.BookClient
-import com.afidalgo.orderservice.order.domain.Order
-import com.afidalgo.orderservice.order.domain.OrderStatus
 import com.afidalgo.orderservice.order.web.OrderRequest
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.cloud.stream.binder.test.OutputDestination
+import org.springframework.cloud.stream.binder.test.TestChannelBinderConfiguration
+import org.springframework.context.annotation.Import
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -19,13 +21,21 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
 import reactor.core.publisher.Mono
 import shared.library.order.Book
+import shared.library.order.Order
+import shared.library.order.OrderAcceptedMessage
+import shared.library.order.OrderStatus
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Import(TestChannelBinderConfiguration::class)
 @Testcontainers
 class OrderServiceApplicationTests(
-    @Autowired val webTestClient: WebTestClient,
+    @Autowired private val webTestClient: WebTestClient,
 ) {
-  @MockBean lateinit var bookClient: BookClient
+  @MockBean private lateinit var bookClient: BookClient
+
+  @Autowired private lateinit var output: OutputDestination
+
+  @Autowired private lateinit var objectMapper: ObjectMapper
 
   companion object {
     @Container val postgreSQLContainer = PostgreSQLContainer(DockerImageName.parse("postgres:14.4"))
@@ -66,6 +76,8 @@ class OrderServiceApplicationTests(
             .returnResult()
             .responseBody
     assertThat(expectedOrder).isNotNull()
+    assertThat(objectMapper.readValue(output.receive().payload, OrderAcceptedMessage::class.java))
+        .isEqualTo(expectedOrder?.id?.let { OrderAcceptedMessage(it) })
     webTestClient
         .get()
         .uri("/orders")
@@ -102,6 +114,9 @@ class OrderServiceApplicationTests(
     assertThat(createdOrder?.bookName).isEqualTo(book.title + "-" + book.author)
     assertThat(createdOrder?.bookPrice).isEqualTo(book.price)
     assertThat(createdOrder?.status).isEqualTo(OrderStatus.ACCEPTED)
+
+    assertThat(objectMapper.readValue(output.receive().payload, OrderAcceptedMessage::class.java))
+        .isEqualTo(createdOrder?.id?.let { OrderAcceptedMessage(it) })
   }
 
   @Test
