@@ -6,6 +6,11 @@ server:
     idle-timeout: 15s
 
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/PolarBookshop
   application:
     name: order-service
   lifecycle:

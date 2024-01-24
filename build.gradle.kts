@@ -19,6 +19,8 @@ extra["springCloudVersion"] = "2022.0.3"
 
 extra["testcontainersVersion"] = "1.18.0"
 
+extra["testKeycloakVersion"] = "2.3.0"
+
 java { sourceCompatibility = JavaVersion.VERSION_17 }
 
 java { targetCompatibility = JavaVersion.VERSION_17 }
@@ -51,23 +53,27 @@ dependencies {
   implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+  implementation("org.springframework.cloud:spring-cloud-starter-config")
+  implementation("org.springframework.retry:spring-retry")
+  runtimeOnly("org.springframework:spring-jdbc")
   runtimeOnly("org.postgresql:postgresql")
   runtimeOnly("org.postgresql:r2dbc-postgresql")
   runtimeOnly("org.flywaydb:flyway-core")
-  runtimeOnly("org.springframework:spring-jdbc")
+  kapt("org.springframework.boot:spring-boot-configuration-processor")
+  testImplementation("com.squareup.okhttp3:mockwebserver")
+  implementation("com.afidalgo:shared-library:$sharedLibraryVersion")
+  implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
+  implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.boot:spring-boot-testcontainers")
   testImplementation("io.projectreactor:reactor-test")
   testImplementation("org.testcontainers:junit-jupiter")
   testImplementation("org.testcontainers:postgresql")
   testImplementation("org.testcontainers:r2dbc")
-  kapt("org.springframework.boot:spring-boot-configuration-processor")
-  implementation("org.springframework.cloud:spring-cloud-starter-config")
-  implementation("org.springframework.retry:spring-retry")
-  testImplementation("com.squareup.okhttp3:mockwebserver")
-  implementation("com.afidalgo:shared-library:$sharedLibraryVersion")
   testImplementation("org.springframework.cloud:spring-cloud-stream-test-binder")
-  implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
+  testImplementation("org.springframework.security:spring-security-test")
+  testImplementation(
+      "com.github.dasniko:testcontainers-keycloak:${property("testKeycloakVersion")}")
 }
 
 tasks.withType<KotlinCompile> {
