@@ -2,6 +2,8 @@ package com.afidalgo.orderservice.order.web
 
 import com.afidalgo.orderservice.order.domain.OrderService
 import jakarta.validation.Valid
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -15,8 +17,8 @@ import shared.library.order.Order
 @RequestMapping("orders")
 class OrderController(val orderService: OrderService) {
   @GetMapping
-  fun getAllOrders(): Flux<Order> {
-    return orderService.getAllOrders()
+  fun getAllOrders(@AuthenticationPrincipal jwt: Jwt): Flux<Order> {
+    return orderService.getAllOrders(jwt.subject)
   }
 
   @PostMapping

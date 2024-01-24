@@ -17,11 +17,12 @@ import shared.library.order.OrderStatus
 class OrderService(
     val orderRepository: OrderRepository,
     val bookClient: BookClient,
-    val streamBridge: StreamBridge
+    val streamBridge: StreamBridge,
 ) {
+  private val logger = LoggerFactory.getLogger(OrderService::class.java)
 
-  fun getAllOrders(): Flux<Order> {
-    return orderRepository.findAll()
+  fun getAllOrders(userId: String): Flux<Order> {
+    return orderRepository.findAllByCreatedBy(userId)
   }
 
   @Transactional
@@ -68,8 +69,8 @@ class OrderService(
             OrderStatus.DISPATCHED,
             existingOrder.createdDate,
             existingOrder.lastModifiedDate,
+            existingOrder.createdBy,
+            existingOrder.lastModifiedBy,
             existingOrder.version)
   }
-
-  private val logger = LoggerFactory.getLogger(OrderService::class.java)
 }
