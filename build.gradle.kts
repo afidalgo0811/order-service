@@ -55,15 +55,16 @@ dependencies {
   implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
   implementation("org.springframework.cloud:spring-cloud-starter-config")
   implementation("org.springframework.retry:spring-retry")
+  implementation("com.afidalgo:shared-library:$sharedLibraryVersion")
+  implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
+  implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+  implementation("org.springframework.boot:spring-boot-starter-actuator")
   runtimeOnly("org.springframework:spring-jdbc")
   runtimeOnly("org.postgresql:postgresql")
   runtimeOnly("org.postgresql:r2dbc-postgresql")
   runtimeOnly("org.flywaydb:flyway-core")
   kapt("org.springframework.boot:spring-boot-configuration-processor")
   testImplementation("com.squareup.okhttp3:mockwebserver")
-  implementation("com.afidalgo:shared-library:$sharedLibraryVersion")
-  implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
-  implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
   testImplementation("org.springframework.boot:spring-boot-starter-test")
   testImplementation("org.springframework.boot:spring-boot-testcontainers")
   testImplementation("io.projectreactor:reactor-test")
@@ -115,3 +116,5 @@ tasks.named<BootBuildImage>("bootBuildImage") {
     }
   }
 }
+
+springBoot { buildInfo() }
