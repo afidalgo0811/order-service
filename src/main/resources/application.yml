@@ -68,11 +68,13 @@ management:
       exposure:
         include:
          - health
-         - metrics
          - prometheus
          - flyway
          - info
          - heapdump
+         - configprops
+         - loggers
+         - mappings
   info:
     env:
       enabled: true
