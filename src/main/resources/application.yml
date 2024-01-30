@@ -67,14 +67,17 @@ management:
     web:
       exposure:
         include:
-         - health
-         - prometheus
-         - flyway
-         - info
-         - heapdump
-         - configprops
-         - loggers
-         - mappings
+          - health
+          - prometheus
+          - flyway
+          - info
+          - heapdump
+          - configprops
+          - loggers
+          - mappings
+          - env
+          - bindings
+          - functions
   info:
     env:
       enabled: true
